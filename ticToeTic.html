@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tic Toe Tic</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="header">
+            <div id="settings">
+                <select id="difficultySelectMenu">
+                    <option value={0}>Easy</option>
+                    <option value={1}>Medium</option>
+                    <option value={2}>Hard</option>
+                </select>
+            </div>
+
+            <div id="scoreBoardField">
+                <div class="board">
+                    <button id="xScoreBoard" class="scoreBoard">
+                        <span>X</span>
+                        <span>:</span>
+                        <span id="xScore">0</span>
+                    </button>
+                    <div id="xActiveSign"></div>
+                </div>
+                <div class="board">
+                    <button id="oScoreBoard" class="scoreBoard">
+                        <span>O</span>
+                        <span>:</span>
+                        <span id="oScore">0</span>
+                    </button>
+                    <div id="oActiveSign"></div>
+                </div>
+            </div>
+
+            <div id="turningBoard">
+                <div class="chip">
+                    <span>Turn: </span> <span id="currentPlayerSign"></span>
+                </div>
+                <!-- <div class="chip">Select Player's sign or Start the Game</div> -->
+            </div>
+            
+        </div>
+        <div id="body"></div>
+        <div id="footer">
+            <div id="newGameButton">New Game</div>
+        </div>
+    </div>
+    <script src="functions.js"></script>
+
+</body>
+
+</html>
