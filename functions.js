@@ -123,7 +123,7 @@ function onHandleUserClick(cellId) {
         if (!cell.disabled) {
             cell.innerText = user.sign;
             updateCellsStatus(cellId, user);
-            cell.disabled = true;
+            // cell.disabled = true;
         }
 
         isGameStart = true;
@@ -165,6 +165,11 @@ function runBot() {
 }
 
 function changePlayer() {
+    if(isDraw()){
+        endGame();
+        alert('DRAW');
+        return;
+    }
     let currentPlayerSign = document.getElementById('currentPlayerSign');
     if (user.isTurn) {
         currentPlayerSign.innerText = bot.sign.toUpperCase();
@@ -214,37 +219,32 @@ function endGame() {
 
 function checkLineWin(player) {
     let sign = player.sign;
-    
+
     for (let i = 0; i < 2; i++) {
-         
         let isReverse = Boolean(i);
         let flag = true;
+        // let order = `${sign}: `;
         for (let x = 0; x < 3; x++) {
-            let order = ''
+            flag = true;
+
             if (getCell(x, 0, isReverse).innerText !== sign) {
-                // alert(" player: " + player.sign +"pass "+ isReverse + " x:" + x )
                 continue;
             }
-            order += !isReverse? ` ${x}${0}` : ` ${0}${x}`
+            // order += !isReverse? ` ${sign +'_'+ x +'0'}: ` : ` ${sign +'_'+ '0' + x}: `
             for (let y = 1; y < 3; y++) {
-                order += !isReverse? ` ${x}${y}` : ` ${y}${x}`
+                // order += !isReverse? ` ${sign +'_'+ x +y}, ` : ` ${sign +'_'+y+x}, `
                 let cell = getCell(x, y, isReverse)
                 if (cell.innerText !== sign) {
-                    // if(!isReverse){
-                    //     alert('stop at: ' + x + " " + y)
-                    // }else{
-                    //     alert('stop at: ' + y + " " + x)
-                    // }
-                    
-                    flag =false;
+                    flag = false;
                     break;
                 }
             }
+            // order +='; '
             // alert("order: "+order)
-            if(flag){
+            if (flag) {
                 return true;
             }
-            
+
         }
     }
     return false;
@@ -265,6 +265,15 @@ function checkCrossWin(player) {
     }
 
     return false;
+}
+
+function isDraw(){
+    cellsStatus.forEach((cell) => {
+        if(cell.isActive === true){
+            return false;
+        }
+    })
+    return true;
 }
 
 function getCell(x, y, isReverse) {
