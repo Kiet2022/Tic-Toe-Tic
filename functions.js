@@ -1,5 +1,6 @@
-// import { user, bot, cellsStatus } from './constants';
 var isGameStart = false;
+
+
 const user = {
     isTurn: true,
     sign: 'x'
@@ -68,6 +69,18 @@ const cellsStatus = [
 
 ];
 
+const winConditions = [
+    ['cell_0_0', 'cell_0_1', 'cell_0_2'],
+    ['cell_1_0', 'cell_1_1', 'cell_1_2'],
+    ['cell_2_0', 'cell_2_1', 'cell_2_2'],
+    ['cell_0_0', 'cell_1_0', 'cell_2_0'],
+    ['cell_0_1', 'cell_1_1', 'cell_2_1'],
+    ['cell_0_2', 'cell_1_2', 'cell_2_2'],
+    ['cell_0_0', 'cell_1_1', 'cell_2_2'],
+    ['cell_0_2', 'cell_1_1', 'cell_2_0']
+]
+
+
 function startNewGame() {
     isGameStart = false;
     user.isTurn = true;
@@ -127,8 +140,9 @@ function onHandleUserClick(cellId) {
         }
 
         isGameStart = true;
-        isWin(user);
-        changePlayer();
+        if (!isWin(user)) {
+            changePlayer();
+        }
     }
 }
 
@@ -143,8 +157,9 @@ function onHandleBotClick(cellId) {
         }
 
         isGameStart = true;
-        isWin(bot);
-        changePlayer();
+        if (!isWin(bot)) {
+            changePlayer();
+        }
     }
 }
 function updateCellsStatus(cellId, player) {
@@ -165,7 +180,7 @@ function runBot() {
 }
 
 function changePlayer() {
-    if(isDraw()){
+    if (isDraw()) {
         endGame();
         alert('DRAW');
         return;
@@ -197,12 +212,25 @@ function onHandleSelectOSign() {
 }
 
 function isWin(player) {
-    // alert('check: ' + player.sign)
-    if (checkLineWin(player) || checkCrossWin(player)) {
-        alert("winner " + player.sign)
-        updateScoreBoard(player);
-        endGame();
+    let flag = true;
+    for (let i = 0; i < winConditions.length; i++) {
+        flag = true;
+        let cellGroup = winConditions[i];
+        for (let j = 0; j < 3; j++) {
+            let cell = document.getElementById(cellGroup[j]);
+            if (cell.innerText !== player.sign) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            alert("winner " + player.sign)
+            updateScoreBoard(player);
+            endGame();
+            break;
+        }
     }
+
 }
 
 function updateScoreBoard(player) {
@@ -217,72 +245,15 @@ function endGame() {
     // alert('End')
 }
 
-function checkLineWin(player) {
-    let sign = player.sign;
-
-    for (let i = 0; i < 2; i++) {
-        let isReverse = Boolean(i);
-        let flag = true;
-        // let order = `${sign}: `;
-        for (let x = 0; x < 3; x++) {
-            flag = true;
-
-            if (getCell(x, 0, isReverse).innerText !== sign) {
-                continue;
-            }
-            // order += !isReverse? ` ${sign +'_'+ x +'0'}: ` : ` ${sign +'_'+ '0' + x}: `
-            for (let y = 1; y < 3; y++) {
-                // order += !isReverse? ` ${sign +'_'+ x +y}, ` : ` ${sign +'_'+y+x}, `
-                let cell = getCell(x, y, isReverse)
-                if (cell.innerText !== sign) {
-                    flag = false;
-                    break;
-                }
-            }
-            // order +='; '
-            // alert("order: "+order)
-            if (flag) {
-                return true;
-            }
-
-        }
-    }
-    return false;
-}
-
-function checkCrossWin(player) {
-    let sign = player.sign;
-    let cell = getCell(1, 1);
-
-    if (cell.innerText !== sign) {
-        return false;
-    }
-
-    if (getCell(0, 0).innerText === sign && getCell(2, 2).innerText === sign) {
-        return true;
-    } else if (getCell(0, 2).innerText === sign && getCell(2, 0).innerText === sign) {
-        return true;
-    }
-
-    return false;
-}
-
-function isDraw(){
+function isDraw() {
+    flag = true;
     cellsStatus.forEach((cell) => {
-        if(cell.isActive === true){
-            return false;
+        if (cell.isActive) {
+            flag = false;
         }
     })
-    return true;
+    return flag;
 }
-
-function getCell(x, y, isReverse) {
-    if (isReverse) {
-        return document.getElementById(`cell_${y}_${x}`);
-    }
-    return document.getElementById(`cell_${x}_${y}`);
-}
-
 
 startNewGame();
 
